@@ -36,11 +36,11 @@ objects:
   spec:
     replicas: 1
     selector:
-      deploymentconfig: ${NAME}
+      app: ${NAME}
     template:
       metadata:
         labels:
-          deploymentconfig: ${NAME}
+          app: ${NAME}
       spec:
         containers:
         - image: ${NAME}
@@ -49,14 +49,6 @@ objects:
           ports:
           - containerPort: 8080
             protocol: TCP
-          volumeMounts:
-            - name: app-config-volume
-              mountPath: /app/environment.js
-              subPath: environment.js
-        volumes:
-          - name: app-config-volume
-            configMap:
-              name: ${NAME}
     triggers:
     - type: ConfigChange
     - type: ImageChange
@@ -80,7 +72,7 @@ objects:
       protocol: TCP
       targetPort: 8080
     selector:
-      deploymentconfig: ${NAME}
+      app: ${NAME}
     type: ClusterIP
 - apiVersion: image.openshift.io/v1
   kind: ImageStream
@@ -95,9 +87,9 @@ objects:
     - name: latest
       from:
         kind: DockerImage
-        name: bitnami/nginx:latest
+        name: nginx:mainline-alpine
       annotations:
-        openshift.io/imported-from: bitnami/nginx:latest
+        openshift.io/imported-from: nginx:mainline-alpine
       referencePolicy:
         type: Source
 - apiVersion: image.openshift.io/v1
